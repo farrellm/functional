@@ -58,18 +58,8 @@
 
 
 
-
-`~(inc 8)
-
-(m-do 8)
-
 (>>= (just 8) #(just [%1 %1]))
 (>>= nothing #(just [%1 %1]))
 
 (return [] 8)
 (>>= [1 2] #(vector %1 %1))
-
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
