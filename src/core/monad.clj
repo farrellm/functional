@@ -10,11 +10,12 @@
 (defprotocol Applicative
   (pure [_ val] "constructor")
   (-<*> [a b] "application"))
+
+(declare <*)
 (defn <*>
   ([f] (fmap #(%) f))
   ([f a & r] (if r (apply <*> (<* f a) r)
                  (-<*> f a))))
-
 (defn <*
   "partial application in an applicative"
   ([af] af)
@@ -76,7 +77,7 @@
 
     Applicative
     (pure [_ u] (just u))
-    (<*> [_ m] (just (v (value m))))
+    (-<*> [_ m] (just (v (value m))))
     
     Monad
     (>>=    [_ f] (f v))
@@ -94,47 +95,7 @@
 
     Applicative
     (pure [_ u] (just u))
-    (<*>  [_ f] nothing)
+    (-<*>  [_ f] nothing)
 
     Monad
     (>>= [_ f] nothing)))
-
-
-(m-do* '((just 8)))
-(m-do* '([x (just 1)]
-         (just 1)
-         [:let y 5]
-         (just y)))
-
-(m-do [x (just 1)]
-      (just 2)
-      [:let y 5
-            z 3]
-      (just [x y z]))
-
-
-(just 8)
-(fmap inc (just 8))
-(<*> (just inc) (just 8))
-
-(>>= (just 8) #(just [%1 %1]))
-(>>= nothing #(just [%1 %1]))
-
-(fmap inc [1 2 3])
-(pure [] 8)
-(<*> (pure [] inc) [1 2 3])
-(>>= [1 2] #(vector %1 %1))
-
-(<*> [#(identity 9)])
-(<*> (<* [identity] [9]))
-(<*> (<* [inc] [8]))
-
-(fmap inc [8])
-(<*> [inc] [8])
-
-(<*> (<* (<* [+] [0 10] [0 100]) [1 1] [7]))
-
-(<*> [+])
-(<*> [+] [1])
-(<*> [+] [1] [2])
-(<*> [+] [1] [1 2] [1 2 3])
