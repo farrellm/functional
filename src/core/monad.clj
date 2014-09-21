@@ -57,10 +57,7 @@
   Applicative
   (pure [_ v] [v])
   (-<*>
-    #_([f]   #_(into []) (map #(%) f))
-    ([f v] #_(into []) (mapcat #(map % v) f))
-    #_([f a b & c] (if c :a #_(apply <*> (<* f a) b c)
-                     :b #_(<*> (<* f a) b))))
+    ([f v] (mapcat #(map % v) f)))
 
   Monad
   (>>= [m f] (mapcat f m)))
