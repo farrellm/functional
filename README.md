@@ -10,6 +10,8 @@ Monad and related protocols for Clojure
       [:return (* x y)])
 ```
 
+[![Build Status](https://travis-ci.org/farrellm/core.monad.svg?branch=master)](https://travis-ci.org/farrellm/core.monad)
+
 ## License
 
 Copyright © Matthew Farrell
