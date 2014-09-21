@@ -1,14 +1,18 @@
 # core.monad
 
-A Clojure library designed to ... well, that part is up to you.
+Monad and related protocols for Clojure
 
 ## Usage
 
-FIXME
+```clojure
+(m-do [x [1 2 3]]
+      [y [1 2 3]]
+      [:return (* x y)])
+```
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © Matthew Farrell
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
