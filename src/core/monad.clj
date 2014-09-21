@@ -25,13 +25,37 @@
 (defprotocol Monad
   (>>= [m f] "bind"))
 
-(defn m-do* [body]
-  (match [body]
-     [([val] :seq)] val
-     [([fst & rst] :seq)] (match fst
-                             [:let & vs] `(let [~@vs] ~(m-do* rst))
-                             [k v] `(>>= ~v (fn [~k] ~(m-do* rst)))
-                             v     `(>>= ~v (fn [_#] ~(m-do* rst))))))
+(defprotocol Monoid
+  (mempty [_])
+  (mappend [a b]))
+(defprotocol MonoidConcat
+  "Optional protocol for more efficient mconcat"
+  (-mconcat [a as]))
+
+(defn mconcat [a & as]
+  (if (satisfies? MonoidConcat a) (-mconcat a as)
+      (reduce mappend a as)))
+
+(defn m-do*
+  ([body] (m-do* body false))
+  ([body type]
+     (match [body]
+            [([val] :seq)]       (match val
+                                        [:return v] `(pure ~type ~v)
+                                        v           v)
+            [([fst & rst] :seq)] (match fst
+                                        [:let & vs] `(let [~@vs] ~(m-do* rst type))
+                                        [:return v] `(>>= (pure ~type ~v) (fn [_#] ~(m-do* rst type)))
+                                        [k v]       (if type
+                                                      `(>>= ~v (fn [~k] ~(m-do* rst type)))
+                                                      (let [t `t#]
+                                                        `(let [~t ~v]
+                                                           (>>= ~t (fn [~k] ~(m-do* rst t))))))
+                                        v           (if type
+                                                      `(>>= ~v (fn [_#] ~(m-do* rst type)))
+                                                      (let [t `t#]
+                                                        `(let [~t ~v]
+                                                           (>>= ~t (fn [_#] ~(m-do* rst t))))))))))
 
 (defmacro m-do [& body]
   (m-do* body))
@@ -60,7 +84,14 @@
     ([f v] (mapcat #(map % v) f)))
 
   Monad
-  (>>= [m f] (mapcat f m)))
+  (>>= [m f] (mapcat f m))
+
+  Monoid
+  (mempty [_] [])
+  (mappend [a b] (concat a b))
+
+  MonoidConcat
+  (-mconcat [a as] (apply concat a as)))
 
 (defprotocol Just
   (value [m] "extract value"))

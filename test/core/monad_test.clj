@@ -16,7 +16,14 @@
     (is (just [1 5 3]) (m-do [x (just 1)]
                              (just 2)
                              [:let y 5, z 3]
-                             (just [x y z])))))
+                             (just [x y z]))))
+
+  (testing "return"
+    (is (just 8) (m-do [x (just 8)]
+                       [:return x]))
+    (is (just 8) (m-do (just 9)
+                       [:return 1]
+                       [:return 8]))))
 
 (deftest sequential
   (testing "functor"
@@ -36,7 +43,12 @@
     (is [3] (<*> [+] [1] [2]))
     (is [3 4 4 5 5 6] (<*> [+] [1] [1 2] [1 2 3])))
   (testing "monad"
-    (is [1 1 2 2] (>>= [1 2] #(vector %1 %1)))))
+    (is [1 1 2 2] (>>= [1 2] #(vector %1 %1))))
+  (testing "monoid"
+    (is [] (mempty [1]))
+    (is [1 2] (mappend [1] [2]))
+    (is [1 2 3] (mconcat [1] [2] [3]))
+    ))
 
 #_(deftest template
   (testing "functor")
