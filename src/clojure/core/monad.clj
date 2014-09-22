@@ -31,15 +31,15 @@
                   (-bind m f))))
 
 (defprotocol Monoid
-  (mempty [_])
-  (mappend [a b]))
-(defprotocol MonoidConcat
-  "Optional protocol for more efficient mconcat"
-  (-mconcat [a as]))
+  (m-zero [_])
+  (-m-plus [a b]))
+(defprotocol MonoidSum
+  "Optional protocol for more efficient sum"
+  (-m-sum [a as]))
 
-(defn mconcat [a & as]
-  (if (satisfies? MonoidConcat a) (-mconcat a as)
-      (reduce mappend a as)))
+(defn m-plus [a & as]
+  (if (satisfies? MonoidSum a) (-m-sum a as)
+      (reduce -m-plus a as)))
 
 (defn m-do*
   ([body] (m-do* body false))
@@ -51,7 +51,7 @@
             [([fst & rst] :seq)] (match fst
                                         [:let & vs] `(let [~@vs] ~(m-do* rst type))
                                         [:return v] `(>>= (pure ~type ~v) (fn [_#] ~(m-do* rst type)))
-                                        [:guard v]  `(>>= (if ~v (pure ~type nil) (mempty ~type))
+                                        [:guard v]  `(>>= (if ~v (pure ~type nil) (m-zero ~type))
                                                           (fn [_#] ~(m-do* rst type)))
                                         [k v]       (if type
                                                       `(>>= ~v (fn [~k] ~(m-do* rst type)))
