@@ -1,6 +1,8 @@
 (ns clojure.core.monad-test
   (:require [clojure.test :refer :all]
-            [clojure.core.monad :refer :all]))
+            [clojure.core.monad :refer :all]
+            [clojure.core.monad.maybe :refer :all]
+            [clojure.core.monad.sequential]))
 
 (deftest maybe
   (testing "basic"
