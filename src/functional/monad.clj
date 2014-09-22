@@ -1,4 +1,4 @@
-(ns clojure.core.monad
+(ns functional.monad
   (:require [clojure.core.match :refer [match]]))
 
 (defprotocol Functor

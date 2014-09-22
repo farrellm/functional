@@ -1,5 +1,5 @@
-(ns clojure.core.monad.maybe
-  (:require [clojure.core.monad :refer :all]))
+(ns functional.monad.maybe
+  (:require [functional.monad :refer :all]))
 
 (defprotocol Just
   (value [m] "extract value"))
