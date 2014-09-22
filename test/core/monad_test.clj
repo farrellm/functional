@@ -51,8 +51,11 @@
   (testing "monoid"
     (is [] (mempty [1]))
     (is [1 2] (mappend [1] [2]))
-    (is [1 2 3] (mconcat [1] [2] [3]))
-    ))
+    (is [1 2 3] (mconcat [1] [2] [3])))
+  (testing "monad-plus"
+    (is [1 2] (m-do [x [1 2 3 4]]
+                    [:guard (< x 2.5)]
+                    [:return x]))))
 
 #_(deftest template
   (testing "functor")

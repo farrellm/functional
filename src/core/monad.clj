@@ -46,6 +46,8 @@
             [([fst & rst] :seq)] (match fst
                                         [:let & vs] `(let [~@vs] ~(m-do* rst type))
                                         [:return v] `(>>= (pure ~type ~v) (fn [_#] ~(m-do* rst type)))
+                                        [:guard v]  `(>>= (if ~v (pure ~type nil) (mempty ~type))
+                                                          (fn [_#] ~(m-do* rst type)))
                                         [k v]       (if type
                                                       `(>>= ~v (fn [~k] ~(m-do* rst type)))
                                                       (let [t `t#]

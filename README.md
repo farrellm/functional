@@ -8,6 +8,12 @@ Monad and related protocols for Clojure
 (m-do [x [1 2 3]]
       [y [1 2 3]]
       [:return (* x y)])
+
+(m-do [x (range 4)
+       y (range 4)]
+      [:let z (* x y)]
+      [:guard (> z 3)]
+      [:return z])
 ```
 
 [![Build Status](https://travis-ci.org/farrellm/core.monad.svg?branch=master)](https://travis-ci.org/farrellm/core.monad)
