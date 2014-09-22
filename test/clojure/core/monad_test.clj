@@ -1,6 +1,6 @@
-(ns core.monad-test
+(ns clojure.core.monad-test
   (:require [clojure.test :refer :all]
-            [core.monad :refer :all]))
+            [clojure.core.monad :refer :all]))
 
 (deftest maybe
   (testing "basic"
