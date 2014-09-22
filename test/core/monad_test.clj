@@ -23,7 +23,11 @@
                        [:return x]))
     (is (just 8) (m-do (just 9)
                        [:return 1]
-                       [:return 8]))))
+                       [:return 8])))
+  (testing "multi-bind"
+    (is (just [1 2]) (m-do [x (just 1)
+                            y (just 2)]
+                           [:return [x y]]))))
 
 (deftest sequential
   (testing "functor"

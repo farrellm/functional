@@ -51,6 +51,7 @@
                                                       (let [t `t#]
                                                         `(let [~t ~v]
                                                            (>>= ~t (fn [~k] ~(m-do* rst t))))))
+                                        [k v & rs]  (m-do* (concat [[k v]] [rs] rst) type)
                                         v           (if type
                                                       `(>>= ~v (fn [_#] ~(m-do* rst type)))
                                                       (let [t `t#]
