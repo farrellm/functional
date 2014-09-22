@@ -1,4 +1,4 @@
-# core.monad
+# functional
 
 Monad and related protocols for Clojure
 
@@ -16,7 +16,7 @@ Monad and related protocols for Clojure
       [:return z])
 ```
 
-[![Build Status](https://travis-ci.org/farrellm/core.monad.svg?branch=master)](https://travis-ci.org/farrellm/core.monad)
+[![Build Status](https://travis-ci.org/farrellm/functional.svg?branch=master)](https://travis-ci.org/farrellm/functional)
 
 ## License
 
