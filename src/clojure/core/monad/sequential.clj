@@ -7,11 +7,10 @@
 
   Applicative
   (pure [_ v] [v])
-  (-<*>
-    ([f v] (mapcat #(map % v) f)))
+  (-ap  [f v] (mapcat #(map % v) f))
 
   Monad
-  (>>= [m f] (mapcat f m))
+  (-bind [m f] (mapcat f m))
 
   Monoid
   (mempty [_] [])

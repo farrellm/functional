@@ -6,6 +6,7 @@
 (defn just [v]
   (reify
     Object
+    (equals [_ o] (and (satisfies? Just o) (= v (value o))))
     (toString [_] (str "Just " v))
 
     Functor
@@ -13,10 +14,10 @@
 
     Applicative
     (pure [_ u] (just u))
-    (-<*> [_ m] (just (v (value m))))
+    (-ap  [_ m] (just (v (value m))))
     
     Monad
-    (>>=    [_ f] (f v))
+    (-bind [_ f] (f v))
 
     Just
     (value [_] v)))
@@ -31,7 +32,7 @@
 
     Applicative
     (pure [_ u] (just u))
-    (-<*>  [_ f] nothing)
+    (-ap  [_ f] nothing)
 
     Monad
-    (>>= [_ f] nothing)))
+    (-bind [_ f] nothing)))

@@ -9,13 +9,13 @@
 
 (defprotocol Applicative
   (pure [_ val] "constructor")
-  (-<*> [a b] "application"))
+  (-ap [a b] "application"))
 
 (declare <*)
 (defn <*>
   ([f] (fmap #(%) f))
   ([f a & r] (if r (apply <*> (<* f a) r)
-                 (-<*> f a))))
+                 (-ap f a))))
 (defn <*
   "partial application in an applicative"
   ([af] af)
@@ -23,7 +23,12 @@
                   (<*> (fmap (fn [f] #(partial f %)) af) a))))
 
 (defprotocol Monad
-  (>>= [m f] "bind"))
+  (-bind [m f] "bind"))
+
+(defn >>=
+  ([m] m)
+  ([m f & fs] (if fs (apply >>= (>>= m f) fs)
+                  (-bind m f))))
 
 (defprotocol Monoid
   (mempty [_])
