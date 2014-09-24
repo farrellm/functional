@@ -4,7 +4,7 @@
             [functional.monad.maybe :refer :all]
             [functional.monad.sequential]))
 
-(deftest maybe
+(deftest maybe-
   (testing "basic"
     (is (= 8 (value (just 8)))))
   (testing "functor"

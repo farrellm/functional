@@ -1,10 +1,18 @@
 (ns functional.monad.maybe
-  (:require [functional.monad :refer :all]))
+  (:require [functional.monad :refer :all])
+  (:require [clojure.core.match :refer [match]]))
 
+(defprotocol Maybe)
+(defprotocol Nothing)
 (defprotocol Just
   (value [m] "extract value"))
+
 (defn just [v]
   (reify
+    Maybe
+    Just
+    (value [_] v)
+
     Object
     (equals [_ o] (and (satisfies? Just o) (= v (value o))))
     (toString [_] (str "Just " v))
@@ -12,27 +20,49 @@
     Functor
     (-fmap [_ f] (just (f v)))
 
-    Applicative
+    Pure
     (pure [_ u] (just u))
+
+    Applicative
     (-ap  [_ m] (just (v (value m))))
     
     Monad
     (-bind [_ f] (f v))
 
-    Just
-    (value [_] v)))
+    clojure.core.match.protocols/IMatchLookup
+    (val-at [_ k not-found]
+      (case k
+        :just v
+        not-found))))
 
 (def nothing
   (reify
+    Maybe
+    Nothing
+
     Object
     (toString [_] "Nothing")
+    (equals [_ o] (satisfies? Nothing o))
 
     Functor
     (-fmap [_ f] nothing)
 
-    Applicative
+    Pure
     (pure [_ u] (just u))
+
+    Applicative
     (-ap  [_ f] nothing)
 
     Monad
-    (-bind [_ f] nothing)))
+    (-bind [_ f] nothing)
+
+    clojure.core.match.protocols/IMatchLookup
+    (val-at [_ k not-found]
+      (case k
+        :nothing nil
+        not-found))))
+
+(defn maybe [d f m]
+  (match [m]
+    [{:just v}] (f v)
+    [{:nothing _}] d))

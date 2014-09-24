@@ -5,8 +5,10 @@
   Functor
   (-fmap [v f] #_(into []) (map f v))
 
-  Applicative
+  Pure
   (pure [_ v] [v])
+
+  Applicative
   (-ap  [f v] (mapcat #(map % v) f))
 
   Monad
