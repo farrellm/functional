@@ -2,7 +2,9 @@
   (:require [clojure.test :refer :all]
             [functional.monad :refer :all]
             [functional.monad.maybe :refer :all]
-            [functional.monad.sequential]))
+            [functional.monad.sequential :refer :all]
+            [functional.monad.maybe-t :refer :all]
+            ))
 
 (deftest maybe-
   (testing "basic"
@@ -61,6 +63,12 @@
     (is (= [1 2] (m-do [x [1 2 3 4]]
                        [:guard (< x 2.5)]
                        [:return x])))))
+
+(deftest maybe-t-
+  (testing "mt"
+    (is (= (maybe-t [(just 2) nothing (just 3)])
+           (>>= (maybe-t [(just 1) nothing (just 2)])
+                #(maybe-t [(just (inc %))]))))))
 
 #_(deftest template
   (testing "functor")
