@@ -85,3 +85,15 @@
   (m-do [f af]
         [v av]
         (pure af (f v))))
+
+(defn m-sequence [x]
+  (match [x]
+    [([ma] :seq)]       (m-do [a ma]
+                              [:return [a]])
+    [([ma & mas] :seq)] (m-do [a ma
+                               as (m-sequence mas)]
+                              [:return (cons a as)])))
+
+(defn lift [f]
+  (fn [& m-args] (m-do [args (m-sequence m-args)]
+                       [:return (apply f args)])))

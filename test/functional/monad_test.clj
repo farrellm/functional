@@ -6,6 +6,14 @@
             [functional.monad.maybe-t :refer :all]
             ))
 
+(deftest monad-functions
+  (testing "m-sequence"
+    (is (= (just [8 8])
+           (m-sequence (repeat 2 (just 8))))))
+  (testing "lift"
+    (is (= (just 24)
+           ((lift +) (just 8) (just 8) (just 8))))))
+
 (deftest maybe-
   (testing "basic"
     (is (= 8 (value (just 8)))))
