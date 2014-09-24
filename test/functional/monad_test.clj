@@ -12,7 +12,9 @@
            (m-sequence (repeat 2 (just 8))))))
   (testing "lift"
     (is (= (just 24)
-           ((lift +) (just 8) (just 8) (just 8))))))
+           ((lift +) (just 8) (just 8) (just 8)))))
+  (testing "join"
+    (is (= [8] (join [[8]])))))
 
 (deftest maybe-
   (testing "basic"

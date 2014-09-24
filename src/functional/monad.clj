@@ -97,3 +97,6 @@
 (defn lift [f]
   (fn [& m-args] (m-do [args (m-sequence m-args)]
                        [:return (apply f args)])))
+
+(defn join [m]
+  (>>= m identity))
