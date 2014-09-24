@@ -41,15 +41,15 @@
                   (-bind m f))))
 
 (defprotocol Monoid
-  (m-zero [_])
-  (-m-plus [a b]))
+  (zero [_])
+  (-plus [a b]))
 (defprotocol MonoidSum
   "Optional protocol for more efficient sum"
-  (-m-sum [a as]))
+  (-sum [a as]))
 
-(defn m-plus [a & as]
-  (if (satisfies? MonoidSum a) (-m-sum a as)
-      (reduce -m-plus a as)))
+(defn plus [a & as]
+  (if (satisfies? MonoidSum a) (-sum a as)
+      (reduce -plus a as)))
 
 (defn m-do*
   ([body] (m-do* body false))
@@ -61,7 +61,7 @@
             [([fst & rst] :seq)] (match fst
                                         [:let & vs] `(let [~@vs] ~(m-do* rst type))
                                         [:return v] `(>>= (pure ~type ~v) (fn [_#] ~(m-do* rst type)))
-                                        [:guard v]  `(>>= (if ~v (pure ~type nil) (m-zero ~type))
+                                        [:guard v]  `(>>= (if ~v (pure ~type nil) (zero ~type))
                                                           (fn [_#] ~(m-do* rst type)))
                                         [k v]       (if type
                                                       `(>>= ~v (fn [~k] ~(m-do* rst type)))
@@ -85,9 +85,3 @@
   (m-do [f af]
         [v av]
         (pure af (f v))))
-
-;; (extend-type Object
-;;   Functor
-;;   (-fmap [v f] (applicative-fmap v f))
-;;   Applicative
-;;   (<*> [af av] (monad-<*> af av)))

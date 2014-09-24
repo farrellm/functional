@@ -15,8 +15,8 @@
   (-bind [m f] (mapcat f m))
 
   Monoid
-  (m-zero [_] [])
-  (-m-plus [a b] (concat a b))
+  (zero [_] [])
+  (-plus [a b] (concat a b))
 
   MonoidSum
-  (-m-sum [a as] (apply concat a as)))
+  (-sum [a as] (apply concat a as)))

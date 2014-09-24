@@ -56,9 +56,9 @@
   (testing "monad"
     (is (= [1 1 2 2] (>>= [1 2] #(vector %1 %1)))))
   (testing "monoid"
-    (is (= [] (m-zero [1])))
-    (is (= [1 2] (m-plus [1] [2])))
-    (is (= [1 2 3] (m-plus [1] [2] [3]))))
+    (is (= [] (zero [1])))
+    (is (= [1 2] (plus [1] [2])))
+    (is (= [1 2 3] (plus [1] [2] [3]))))
   (testing "monad-plus"
     (is (= [1 2] (m-do [x [1 2 3 4]]
                        [:guard (< x 2.5)]
