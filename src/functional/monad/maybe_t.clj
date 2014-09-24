@@ -22,9 +22,3 @@
     Monad
     (-bind [_ g] (maybe-t (>>= v #(maybe (pure v nothing)
                                          (comp run-maybe g) %))))))
-
-(require '[functional.monad.sequential :refer :all])
-
-(def mv (maybe-t [(just 1) nothing (just 2)]))
-
-(run-maybe (>>= mv #(maybe-t [(just (inc %))])))
