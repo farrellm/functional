@@ -1,21 +1,28 @@
 (ns functional.monad
   (:require [clojure.core.match :refer [match]]))
 
+(declare >>=)
+
 (defprotocol Functor
   (-fmap [v f]))
 ;; order of parameters in protocol is necessarily reversed since
 ;; dispatch is on the first argument.
 (defn fmap [f v] (-fmap v f))
 
+(defprotocol Pure
+  (pure [_ val] "constructor"))
+
 (defprotocol Applicative
-  (pure [_ val] "constructor")
   (-ap [a b] "application"))
 
 (declare <*)
 (defn <*>
   ([f] (fmap #(%) f))
-  ([f a & r] (if r (apply <*> (<* f a) r)
-                 (-ap f a))))
+  ([af av & avs] (cond
+                  avs (apply <*> (<* af av) avs)
+                  (satisfies? Applicative af) (-ap af av)
+                  :else (>>= af (fn [f] (>>= av (fn [v] (pure af (f v)))))))))
+
 (defn <*
   "partial application in an applicative"
   ([af] af)
