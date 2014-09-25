@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [functional.monad :refer :all]
             [functional.monad.maybe :refer :all]
+            [functional.monad.either :refer :all]
             [functional.monad.sequential :refer :all]
             [functional.monad.maybe-t :refer :all]
             ))
@@ -47,6 +48,46 @@
     (is (= (just [1 2]) (m-do [x (just 1)
                                y (just 2)]
                               [:return [x y]])))))
+
+(deftest either-
+  (testing "basic"
+    (is (= 8 (-left (left 8))))
+    (is (= 8 (-right (right 8)))))
+  (testing "functor"
+    (is (= (left 8) (fmap inc (left 8))))
+    (is (= (right 9) (fmap inc (right 8)))))
+  (testing "applicative"
+    (is (= (right 9) (<*> (right inc) (right 8))))
+    (is (= (left 0) (<*> (left 0) (right 8))))
+    (is (= (left 0) (<*> (right inc) (left 0))))
+    (is (= (left 0) (<*> (left 0) (left 1)))))
+  (testing "monad"
+    (is (= (right [8 8]) (>>= (right 8) #(right [%1 %1]))))
+    (is (= (right [9 9]) (>>= (right 8)
+                              #(right (inc %))
+                              #(right [%1 %1]))))
+    (is (= nothing (>>= nothing #(right [%1 %1])))))
+  (testing "do"
+    (is (= (right [1 5 3]) (m-do [x (right 1)]
+                                 (right 2)
+                                 [:let y 5, z 3]
+                                 (right [x y z]))))
+    (is (= (left 0) (m-do [x (right 1)]
+                                 (right 2)
+                                 (left 0)
+                                 [:let y 5, z 3]
+                                 (right [x y z])))))
+
+  (testing "return"
+    (is (= (right 8) (m-do [x (right 8)]
+                           [:return x])))
+    (is (= (right 8) (m-do (right 9)
+                           [:return 1]
+                           [:return 8]))))
+  (testing "multi-bind"
+    (is (= (left 0) (m-do [x (right 1)
+                           y (left 0)]
+                          [:return [x y]])))))
 
 (deftest sequential
   (testing "functor"
