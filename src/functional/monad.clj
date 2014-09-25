@@ -87,12 +87,7 @@
         (pure af (f v))))
 
 (defn m-sequence [x]
-  (match [x]
-    [([ma] :seq)]       (m-do [a ma]
-                              [:return [a]])
-    [([ma & mas] :seq)] (m-do [a ma
-                               as (m-sequence mas)]
-                              [:return (cons a as)])))
+  (apply <*> (pure (first x) vector) x))
 
 (defn lift [f]
   (fn [& m-args] (m-do [args (m-sequence m-args)]
