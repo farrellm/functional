@@ -4,6 +4,7 @@
             [functional.monad.maybe :refer :all]
             [functional.monad.either :refer :all]
             [functional.monad.sequential :refer :all]
+            [functional.monad.state :refer :all]
             [functional.monad.maybe-t :refer :all]
             ))
 
@@ -116,6 +117,16 @@
     (is (= [1 2] (m-do [x [1 2 3 4]]
                        [:guard (< x 2.5)]
                        [:return x])))))
+
+(deftest state-
+  (testing "state"
+    (is (= [[9 10] 1])
+        ((run-state (m-do (put 8)
+                          (modify inc)
+                          [x (gets)
+                           y (gets inc)]
+                          (put 1)
+                          [:return [x y]])) []))))
 
 (deftest maybe-t-
   (testing "mt"
