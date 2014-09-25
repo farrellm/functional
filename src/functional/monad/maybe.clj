@@ -2,6 +2,9 @@
   (:require [functional.monad :refer :all])
   (:require [clojure.core.match :refer [match]]))
 
+(declare maybe)
+(declare nothing)
+
 (defprotocol Maybe)
 (defprotocol Nothing)
 (defprotocol Just
@@ -24,7 +27,7 @@
     (pure [_ u] (just u))
 
     Applicative
-    (-ap  [_ m] (just (v (value m))))
+    (-ap  [_ m] (maybe nothing (comp just v) m))
     
     Monad
     (-bind [_ f] (f v))
