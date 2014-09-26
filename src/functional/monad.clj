@@ -32,6 +32,47 @@
   ([af a & r] (if r (apply <* (<* af a) r)
                   (<*> (fmap (fn [f] #(partial f %)) af) a))))
 
+(defn m-sequence [x]
+  (apply <*> (pure (first x) vector) x))
+
+(defprotocol Category
+  (id [_])
+  (-comp [_ a]))
+
+(defn <<<
+  ([a] a)
+  ([a b & c] (if c (-comp a (apply <<< b c))
+                 (-comp a b))))
+
+(defn >>>
+  ([a] a)
+  ([a b & c] (if c (-comp (apply <<< b c) a)
+                 (-comp b a))))
+
+(defprotocol Arrow
+  (-first [_ a]))
+
+(defn arr-first
+  ([arr]   #(-first arr %))
+  ([arr a] (-first arr a)))
+
+(defn arr-second
+  ([arr]       #(arr-second arr %))
+  ([arr [a b]] (let [[c d] (-first arr [b a])]
+                 [d c])))
+
+(defn ***
+  ([f g]       #(*** f g %))
+  ([f g [a b]] (let [[c _] (arr-first f [a nil])
+                     [d _] (arr-first g [b nil])]
+                 [c d])))
+
+(defn &&&
+  ([f g]   #(&&& f g %))
+  ([f g a] (let [[c _] (arr-first f [a nil])
+                 [d _] (arr-first g [a nil])]
+             [c d])))
+
 (defprotocol Monad
   (-bind [m f] "bind"))
 
@@ -86,12 +127,13 @@
         [v av]
         (pure af (f v))))
 
-(defn m-sequence [x]
-  (apply <*> (pure (first x) vector) x))
-
 (defn lift [f]
   (fn [& m-args] (m-do [args (m-sequence m-args)]
                        [:return (apply f args)])))
 
 (defn join [m]
   (>>= m identity))
+
+(defn >=>
+  ([f] f)
+  ([f & fs] #(apply >>= (f %) fs)))
