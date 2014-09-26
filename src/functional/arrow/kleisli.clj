@@ -12,6 +12,8 @@
     (id [_] (kleisli pure))
     (-comp [_ b] (>=> (run-kleisli b) f))
 
+    ;; Should implement Pure, but needs return type polymorphism
+
     Arrow
     (-first [_ m] (m-do [[a b] m
                          c (f a)]
