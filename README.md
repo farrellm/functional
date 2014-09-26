@@ -1,4 +1,4 @@
-# functional
+# kant
 
 Monad and related protocols for Clojure
 
