@@ -1,6 +1,6 @@
 (ns functional.monad.maybe
-  (:require [functional.monad :refer :all])
-  (:require [clojure.core.match :refer [match]]))
+  (:require [functional.monad.protocol :refer :all]
+            [clojure.core.match :refer [match]]))
 
 (declare maybe)
 (declare nothing)
@@ -24,7 +24,7 @@
     (-fmap [_ f] (just (f v)))
 
     Pure
-    (pure [_ u] (just u))
+    (-pure [_ u] (just u))
 
     Applicative
     (-ap  [_ m] (maybe nothing (comp just v) m))
@@ -51,7 +51,7 @@
     (-fmap [_ f] nothing)
 
     Pure
-    (pure [_ u] (just u))
+    (-pure [_ u] (just u))
 
     Applicative
     (-ap  [_ f] nothing)

@@ -1,24 +1,37 @@
 (ns functional.monad
-  (:require [clojure.core.match :refer [match]]))
+  (:require [clojure.core.match :refer [match]]
+            [functional.monad.protocol :refer :all]))
 
 (declare <*>)
 (declare <*)
 (declare >>=)
 
-(defprotocol Pure
-  (pure [_ val] "constructor"))
+(defn $
+  "partial application operator.  returns a function that expects to
+  be partially applied 1 (more) time"
+  [f]
+  (fn [& args1]
+    (fn [& args2]
+      (apply (apply partial f args1) args2))))
 
-(defprotocol Functor
-  (-fmap [v f]))
-;; order of parameters in protocol is necessarily reversed since
-;; dispatch is on the first argument.
+;; Monoid
+(defn zero [m]
+  (-zero m))
+
+(defn plus [a & as]
+  (if (satisfies? MonoidSum a) (-sum a as)
+      (reduce -plus a as)))
+
+;; Pure
+(defn pure [m a]
+  (-pure m a))
+
+;; Functor
 (defn fmap [f v]
   (if (satisfies? Functor v) (-fmap v f)
       (<*> (pure v f) v)))
 
-(defprotocol Applicative
-  (-ap [a b] "application"))
-
+;; Applicative
 (defn <*>
   ([f] (fmap #(%) f))
   ([af av & avs] (cond
@@ -35,10 +48,7 @@
 (defn m-sequence [x]
   (apply <*> (pure (first x) vector) x))
 
-(defprotocol Category
-  (id [_])
-  (-comp [_ a]))
-
+;; Category
 (defn <<<
   ([a] a)
   ([a b & c] (if c (-comp a (apply <<< b c))
@@ -49,48 +59,31 @@
   ([a b & c] (if c (-comp (apply <<< b c) a)
                  (-comp b a))))
 
-(defprotocol Arrow
-  (-first [_ a]))
+;; Arrow
+(defn -swap [a b] [b a])
+(defn -dup  [a]   [a a])
 
 (defn arr-first
   ([arr]   #(-first arr %))
   ([arr a] (-first arr a)))
 
 (defn arr-second
-  ([arr]       #(arr-second arr %))
-  ([arr [a b]] (let [[c d] (-first arr [b a])]
-                 [d c])))
+  ([arr]   #(arr-second arr %))
+  ([arr p] (->> (-swap p) (-first arr) (-swap))))
 
 (defn ***
-  ([f g]       #(*** f g %))
-  ([f g [a b]] (let [[c _] (arr-first f [a nil])
-                     [d _] (arr-first g [b nil])]
-                 [c d])))
+  ([f g]   #(*** f g %))
+  ([f g p] (->> p (arr-first f) (arr-second g))))
 
 (defn &&&
   ([f g]   #(&&& f g %))
-  ([f g a] (let [[c _] (arr-first f [a nil])
-                 [d _] (arr-first g [a nil])]
-             [c d])))
+  ([f g a] (*** f g [a a])))
 
-(defprotocol Monad
-  (-bind [m f] "bind"))
-
+;; Monad
 (defn >>=
   ([m] m)
   ([m f & fs] (if fs (apply >>= (>>= m f) fs)
                   (-bind m f))))
-
-(defprotocol Monoid
-  (zero [_])
-  (-plus [a b]))
-(defprotocol MonoidSum
-  "Optional protocol for more efficient sum"
-  (-sum [a as]))
-
-(defn plus [a & as]
-  (if (satisfies? MonoidSum a) (-sum a as)
-      (reduce -plus a as)))
 
 (defn m-do*
   ([body] (m-do* body false))

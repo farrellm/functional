@@ -1,5 +1,5 @@
 (ns functional.arrow.function
-  (:require [functional.monad :refer :all]))
+  (:require [functional.monad.protocol :refer :all]))
 
 (defprotocol Function
   (run-function [_]))
@@ -9,11 +9,11 @@
     (run-function [_] f)
     
     Category
-    (id [_] (function identity))
+    (-id [_] (function identity))
     (-comp [_ b] (function (comp f (run-function b))))
 
     Pure
-    (pure [_ g]
+    (-pure [_ g]
       (function g))
 
     Arrow

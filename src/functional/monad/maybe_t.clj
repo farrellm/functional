@@ -1,8 +1,7 @@
 (ns functional.monad.maybe-t
   (:require [functional.monad :refer :all]
-            [functional.monad.maybe :refer :all]
-            [functional.monad.sequential :refer :all]
-            [functional.monad.maybe-t :refer :all]))
+            [functional.monad.protocol :refer :all]
+            [functional.monad.maybe :refer :all]))
 
 (defprotocol MaybeT
   (run-maybe [_]))
@@ -17,7 +16,7 @@
     (run-maybe [_] v)
     
     Pure
-    (pure [_ u] (maybe-t (pure v (just u))))
+    (-pure [_ u] (maybe-t (pure v (just u))))
     
     Monad
     (-bind [_ g] (maybe-t (>>= v #(maybe (pure v nothing)

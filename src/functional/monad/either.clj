@@ -1,6 +1,6 @@
 (ns functional.monad.either
-  (:require [functional.monad :refer :all])
-  (:require [clojure.core.match :refer [match]]))
+  (:require [functional.monad.protocol :refer :all]
+            [clojure.core.match :refer [match]]))
 
 (defprotocol Either)
 (defprotocol Left
@@ -19,7 +19,7 @@
     (toString [_] (str "Right " v))
 
     Pure
-    (pure [_ u] (right u))
+    (-pure [_ u] (right u))
 
     Monad
     (-bind [_ f] (f v))
@@ -41,7 +41,7 @@
     (toString [_] (str "Left " v))
 
     Pure
-    (pure [_ u] (right u))
+    (-pure [_ u] (right u))
 
     Monad
     (-bind [m f] m)

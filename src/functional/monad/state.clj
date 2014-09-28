@@ -1,6 +1,5 @@
 (ns functional.monad.state
-  (:require [functional.monad :refer :all])
-  (:require [clojure.core.match :refer [match]]))
+  (:require [functional.monad.protocol :refer :all]))
 
 (defprotocol State
   (run-state [f]))
@@ -11,7 +10,7 @@
     (run-state [_] f)
 
     Pure
-    (pure [_ v]
+    (-pure [_ v]
       (state (fn [s] [v s])))
 
     Monad

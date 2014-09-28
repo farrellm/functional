@@ -1,12 +1,12 @@
 (ns functional.monad.sequential
-  (:require [functional.monad :refer :all]))
+  (:require [functional.monad.protocol :refer :all]))
 
 (extend-type clojure.lang.Sequential
   Functor
   (-fmap [v f] #_(into []) (map f v))
 
   Pure
-  (pure [_ v] [v])
+  (-pure [_ v] [v])
 
   Applicative
   (-ap  [f v] (mapcat #(map % v) f))
@@ -15,7 +15,7 @@
   (-bind [m f] (mapcat f m))
 
   Monoid
-  (zero [_] [])
+  (-zero [_] [])
   (-plus [a b] (concat a b))
 
   MonoidSum
