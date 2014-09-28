@@ -1,11 +1,11 @@
-(ns functional.monad-test
+(ns kant.monad-test
   (:require [clojure.test :refer :all]
-            [functional.monad :refer :all]
-            [functional.monad.maybe :refer :all]
-            [functional.monad.either :refer :all]
-            [functional.monad.sequential :refer :all]
-            [functional.monad.state :refer :all]
-            [functional.monad.maybe-t :refer :all]
+            [kant.monad :refer :all]
+            [kant.monad.maybe :refer :all]
+            [kant.monad.either :refer :all]
+            [kant.monad.sequential :refer :all]
+            [kant.monad.state :refer :all]
+            [kant.monad.maybe-t :refer :all]
             ))
 
 (deftest monad-functions

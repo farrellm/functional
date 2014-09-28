@@ -1,6 +1,6 @@
-(ns functional.arrow.kleisli
-  (:require [functional.monad :refer :all]
-            [functional.monad.protocol :refer :all]))
+(ns kant.arrow.kleisli
+  (:require [kant.monad :refer :all]
+            [kant.monad.protocol :refer :all]))
 
 (defprotocol Kleisli
   (run-kleisli [_]))

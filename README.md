@@ -16,7 +16,7 @@ Monad and related protocols for Clojure
       [:return z])
 ```
 
-[![Build Status](https://travis-ci.org/farrellm/functional.svg?branch=master)](https://travis-ci.org/farrellm/functional)
+[![Build Status](https://travis-ci.org/farrellm/kant.svg?branch=master)](https://travis-ci.org/farrellm/kant)
 
 ## License
 

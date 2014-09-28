@@ -1,7 +1,7 @@
-(ns functional.monad.maybe-t
-  (:require [functional.monad :refer :all]
-            [functional.monad.protocol :refer :all]
-            [functional.monad.maybe :refer :all]))
+(ns kant.monad.maybe-t
+  (:require [kant.monad :refer :all]
+            [kant.monad.protocol :refer :all]
+            [kant.monad.maybe :refer :all]))
 
 (defprotocol MaybeT
   (run-maybe [_]))

@@ -1,6 +1,6 @@
-(ns functional.monad
+(ns kant.monad
   (:require [clojure.core.match :refer [match]]
-            [functional.monad.protocol :refer :all]))
+            [kant.monad.protocol :refer :all]))
 
 (declare <*>)
 (declare <*)

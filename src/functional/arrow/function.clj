@@ -1,5 +1,5 @@
-(ns functional.arrow.function
-  (:require [functional.monad.protocol :refer :all]))
+(ns kant.arrow.function
+  (:require [kant.monad.protocol :refer :all]))
 
 (defprotocol Function
   (run-function [_]))

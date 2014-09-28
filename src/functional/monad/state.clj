@@ -1,5 +1,5 @@
-(ns functional.monad.state
-  (:require [functional.monad.protocol :refer :all]))
+(ns kant.monad.state
+  (:require [kant.monad.protocol :refer :all]))
 
 (defprotocol State
   (run-state [f]))

@@ -1,5 +1,5 @@
-(ns functional.monad.maybe
-  (:require [functional.monad.protocol :refer :all]
+(ns kant.monad.maybe
+  (:require [kant.monad.protocol :refer :all]
             [clojure.core.match :refer [match]]))
 
 (declare maybe)

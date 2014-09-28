@@ -1,5 +1,5 @@
-(ns functional.monad.either
-  (:require [functional.monad.protocol :refer :all]
+(ns kant.monad.either
+  (:require [kant.monad.protocol :refer :all]
             [clojure.core.match :refer [match]]))
 
 (defprotocol Either)

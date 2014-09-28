@@ -1,4 +1,4 @@
-(ns functional.monad.protocol)
+(ns kant.monad.protocol)
 
 (defprotocol Functor
   (-fmap [v f]))
