@@ -18,7 +18,7 @@
   (-first [_ a]))
 
 (defprotocol Monad
-  (-bind [m f] "bind"))
+  (-bind [m f]))
 
 (defprotocol Monoid
   (-zero [_])

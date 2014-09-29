@@ -1,10 +1,16 @@
 (ns kant.monad
   (:require [clojure.core.match :refer [match]]
-            [kant.monad.protocol :refer :all]))
+            [kant.monad.protocol :refer :all])
+  (:import [java.lang.UnsupportedOperationException]))
 
 (declare <*>)
 (declare <*)
 (declare >>=)
+(declare >>>)
+
+(defn -swap [[a b]] [b a])
+(defn -dup  [a]   [a a])
+(defn -flip [f]   #(f %2 %1))
 
 (defn $
   "partial application operator.  returns a function that expects to
@@ -19,17 +25,25 @@
   (-zero m))
 
 (defn plus [a & as]
-  (if (satisfies? MonoidSum a) (-sum a as)
-      (reduce -plus a as)))
+  (cond
+   (satisfies? MonoidSum a) (-sum a as)
+   (satisfies? Monoid a) (reduce -plus a as)
+   :else (throw (UnsupportedOperationException. "Monoid/-plus"))))
 
 ;; Pure
 (defn pure [m a]
-  (-pure m a))
+  (cond
+   (satisfies? Pure m) (-pure m a)
+   (satisfies? Arrow m) (-arr m (fn [_] a))
+   :else (throw (UnsupportedOperationException. "Pure/-pure"))))
 
 ;; Functor
 (defn fmap [f v]
-  (if (satisfies? Functor v) (-fmap v f)
-      (<*> (pure v f) v)))
+  (cond
+   (satisfies? Functor v) (-fmap v f)
+   (or (satisfies? Applicative v)
+       (satisfies? Monad v)) (<*> (pure v f) v)
+   :else (throw (UnsupportedOperationException. "Functor/-fmap"))))
 
 ;; Applicative
 (defn <*>
@@ -37,7 +51,11 @@
   ([af av & avs] (cond
                   avs (apply <*> (<* af av) avs)
                   (satisfies? Applicative af) (-ap af av)
-                  :else (>>= af (fn [f] (>>= av (fn [v] (pure af (f v)))))))))
+                  (satisfies? Monad af) (>>= af (fn [f] (>>= av (fn [v] (pure af (f v))))))
+                  (satisfies? Arrow af) (>>> (-arr af -dup)  #(-first av %)
+                                             (-arr af -swap) #(-first af %)
+                                             (fn [[f v]] (f v)))
+                  :else (throw (UnsupportedOperationException. "Applicative/-ap")))))
 
 (defn <*
   "partial application in an applicative"
@@ -45,8 +63,8 @@
   ([af a & r] (if r (apply <* (<* af a) r)
                   (<*> (fmap (fn [f] #(partial f %)) af) a))))
 
-(defn m-sequence [x]
-  (apply <*> (pure (first x) vector) x))
+(defn m-sequence [[a & as]]
+  (apply <*> (pure a vector) a as))
 
 ;; Category
 (defn <<<
@@ -56,13 +74,10 @@
 
 (defn >>>
   ([a] a)
-  ([a b & c] (if c (-comp (apply <<< b c) a)
+  ([a b & c] (if c (-comp (apply >>> b c) a)
                  (-comp b a))))
 
 ;; Arrow
-(defn -swap [a b] [b a])
-(defn -dup  [a]   [a a])
-
 (defn arr-first
   ([arr]   #(-first arr %))
   ([arr a] (-first arr a)))
@@ -111,14 +126,6 @@
 
 (defmacro m-do [& body]
   (m-do* body))
-
-(defn applicative-fmap [v f]
-  (<*> (pure v f) v))
-
-(defn monad-<*> [af av]
-  (m-do [f af]
-        [v av]
-        (pure af (f v))))
 
 (defn lift [f]
   (fn [& m-args] (m-do [args (m-sequence m-args)]
