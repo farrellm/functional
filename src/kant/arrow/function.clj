@@ -10,4 +10,5 @@
   (-pure [_ a] (fn [_] a))
 
   Arrow
+  (-arr [_ f] f)
   (-first [f [a b]] [(f a) b]))

@@ -16,10 +16,8 @@
     ;; (id [_] (kleisli #[:return %]))
     (-comp [_ b] (>=> (run-kleisli b) f))
 
-    ;; Should implement Pure, but needs return type polymorphism
-    ;; (pure [g] (kleisli (comp #[:return %] g)))
-
     Arrow
+    (-arr [_ f] (kleisli f))
     (-first [_ m] (m-do [[a b] m
                          c (f a)]
                         [:return [c b]]))))

@@ -14,7 +14,7 @@
   (-comp [_ a]))
 
 (defprotocol Arrow
-  ;; (-arr)
+  (-arr [_ f])
   (-first [_ a]))
 
 (defprotocol Monad
