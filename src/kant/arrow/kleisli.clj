@@ -8,6 +8,9 @@
   (reify
     Kleisli
     (run-kleisli [_] f)
+
+    clojure.lang.IFn
+    (invoke [_ a] (f a))
     
     Category
     ;; (id [_] (kleisli #[:return %]))
