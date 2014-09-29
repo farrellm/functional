@@ -1,21 +1,13 @@
 (ns kant.arrow.function
   (:require [kant.monad.protocol :refer :all]))
 
-(defprotocol Function
-  (run-function [_]))
-(defn function [f]
-  (reify
-    Function
-    (run-function [_] f)
-    
-    Category
-    (-id [_] (function identity))
-    (-comp [_ b] (function (comp f (run-function b))))
+(extend-type clojure.lang.IFn
+  Category
+  (-id [_] identity)
+  (-comp [a b] (comp a b))
 
-    Pure
-    (-pure [_ g]
-      (function g))
+  Pure
+  (-pure [_ a] (fn [_] a))
 
-    Arrow
-    (-first
-      [_ [a b]] [(f a) b])))
+  Arrow
+  (-first [f [a b]] [(f a) b]))
