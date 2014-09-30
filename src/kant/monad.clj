@@ -78,6 +78,9 @@
                  (-comp b a))))
 
 ;; Arrow
+(defn arr [a f]
+  (-arr a f))
+
 (defn arr-first
   ([arr]   #(-first arr %))
   ([arr a] (-first arr a)))
