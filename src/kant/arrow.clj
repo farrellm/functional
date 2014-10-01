@@ -38,10 +38,11 @@
   ([arr]   #(arr-second arr %))
   ([arr p] (->> (-swap p) (p/-first arr) (-swap))))
 
-(defn ***
-  ([f g]   #(*** f g %))
+;; clojure complains about ***
+(defn xxx
+  ([f g]   #(xxx f g %))
   ([f g a] (->> a (arr-first f) (arr-second g))))
 
 (defn &&&
   ([f g]   #(&&& f g %))
-  ([f g a] (*** f g [a a])))
+  ([f g a] (xxx f g [a a])))

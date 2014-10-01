@@ -59,7 +59,7 @@
   (m-do* body))
 
 (defn lift [f]
-  (fn [& m-args] (m-do [args (m-sequence m-args)]
+  (fn [& m-args] (m-do [args (sequence-a m-args)]
                        [:return (apply f args)])))
 
 (defn join [m]

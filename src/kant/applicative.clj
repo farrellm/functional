@@ -30,7 +30,7 @@
   ([af a & r] (if r (apply <* (<* af a) r)
                   (<*> (fmap (fn [f] #(partial f %)) af) a))))
 
-(defn m-sequence [[a & as]]
+(defn sequence-a [[a & as]]
   (apply <*> (pure a vector) a as))
 
 ;; Functor

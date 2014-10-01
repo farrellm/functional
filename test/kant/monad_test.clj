@@ -18,11 +18,11 @@
             ))
 
 (deftest monad-functions
-  (testing "m-sequence"
+  (testing "sequence"
     (is (= (just [8 8])
-           (m-sequence (repeat 2 (just 8)))))
+           (sequence-a (repeat 2 (just 8)))))
     (is (= nothing
-           (m-sequence [(just 8) nothing (just 8)]))))
+           (sequence-a [(just 8) nothing (just 8)]))))
   (testing "lift"
     (is (= (just 24)
            ((lift +) (just 8) (just 8) (just 8)))))
@@ -153,8 +153,8 @@
     (= 9 ((<*> (pure #() inc) (pure #() 8)) nil)))
 
   (testing "arrow"
-    (is (= [11 200] ((*** inc #(+ % %)) [10 100])))
-    (is (= [11 200] (*** inc #(+ % %) [10 100])))
+    (is (= [11 200] ((xxx inc #(+ % %)) [10 100])))
+    (is (= [11 200] (xxx inc #(+ % %) [10 100])))
     (is (= [11 20] ((&&& inc #(+ % %)) 10)))
     (is (= [11 20] (&&& inc #(+ % %) 10)))
 
