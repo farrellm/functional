@@ -1,6 +1,6 @@
 (ns kant.monad
   (:require [clojure.core.match :refer [match]]
-            [kant.monad.protocol :refer :all]
+            [kant.monad.protocol :as p]
             [kant.hierarchy :as h]
             [kant.functor :refer :all]
             [kant.applicative :refer :all]
@@ -17,14 +17,19 @@
       (apply (apply partial f args1) args2))))
 
 ;; Applicative
-(defmethod <*> ::h/monad [af av]
+(defmethod <*>+ ::h/monad [af av]
   (>>= af (fn [f] (>>= av (fn [v] (pure af (f v)))))))
 
 ;; Monad
+(defmulti >>=+
+  (fn [m f] (h/most-general :monad m)))
+
 (defn >>=
   ([m] m)
-  ([m f & fs] (if fs (apply >>= (>>= m f) fs)
-                  (-bind m f))))
+  ([m f & fs] (cond
+               fs (apply >>= (>>= m f) fs)
+               (satisfies? p/Monad m) (p/-bind m f)
+               :else (>>=+ m f))))
 
 (defn m-do*
   ([body] (m-do* body false))

@@ -4,22 +4,25 @@
             [kant.hierarchy :as h]))
 
 ;; Pure
+(defmulti pure+
+  (fn [a v] (h/most-general :applicative a)))
+
 (defn pure [m a]
-  (cond
-   (satisfies? Pure m) (-pure m a)
-   (satisfies? Arrow m) (-arr m (fn [_] a))
-   :else (throw (UnsupportedOperationException. "Pure/-pure"))))
+  (if (satisfies? Pure m) (-pure m a)
+      (pure+ m a)))
 
 ;; Applicative
 (declare <*)
 
-(defmulti <*>
+(defmulti <*>+
   (fn [af & _] (h/most-general :applicative af)))
 
-(defmethod <*> ::h/applicative
+(defn <*>
   ([af] (fmap #(%) af))
-  ([af av & avs] (if avs (apply <*> (<* af av) avs)
-                     (-ap af av))))
+  ([af av & avs] (cond
+                  avs (apply <*> (<* af av) avs)
+                  (satisfies? Applicative af) (-ap af av)
+                  :else (<*>+ af av))))
 
 (defn <*
   "partial application in an applicative"
@@ -30,5 +33,6 @@
 (defn m-sequence [[a & as]]
   (apply <*> (pure a vector) a as))
 
-(defmethod fmap ::h/applicative [f v]
+;; Functor
+(defmethod fmap+ ::h/applicative [f v]
   (<*> (pure v f) v))
