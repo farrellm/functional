@@ -13,6 +13,8 @@
             [kant.monad.maybe-t :refer :all]
             [kant.arrow.function :refer :all]
             [kant.arrow.kleisli :refer :all]
+            [kant.hierarchy :as h]
+            [kant.monad.protocol :as p]
             ))
 
 (deftest monad-functions
