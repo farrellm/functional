@@ -1,6 +1,5 @@
 (ns kant.arrow
-  (:require [clojure.core.match :refer [match]]
-            [kant.monad.protocol :as p]
+  (:require [kant.monad.protocol :as p]
             [kant.hierarchy :as h]
             [kant.category :refer :all]
             [kant.applicative :refer :all]))
