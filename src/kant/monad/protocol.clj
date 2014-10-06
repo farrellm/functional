@@ -17,6 +17,10 @@
   (-arr [_ f])
   (-first [a]))
 
+(defprotocol ArrowChoice
+  (-left [a])
+  (-right [a]))
+
 (defprotocol Monad
   (-bind [m f]))
 
