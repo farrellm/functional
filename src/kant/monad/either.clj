@@ -1,5 +1,5 @@
 (ns kant.monad.either
-  (:require [kant.monad.protocol :refer :all]
+  (:require [kant.monad.protocol :as p]
             [clojure.core.match :refer [match]]))
 
 (defprotocol Either)
@@ -18,11 +18,11 @@
     (equals [_ o] (and (satisfies? Right o) (= v (-right o))))
     (toString [_] (str "Right " v))
 
-    Pure
-    (-pure [_ u] (right u))
+    p/Pure
+    (p/-pure [_ u] (right u))
 
-    Monad
-    (-bind [_ f] (f v))
+    p/Monad
+    (p/-bind [_ f] (f v))
 
     clojure.core.match.protocols/IMatchLookup
     (val-at [_ k not-found]
@@ -40,11 +40,11 @@
     (equals [_ o] (and (satisfies? Left o) (= v (-left o))))
     (toString [_] (str "Left " v))
 
-    Pure
-    (-pure [_ u] (right u))
+    p/Pure
+    (p/-pure [_ u] (right u))
 
-    Monad
-    (-bind [m f] m)
+    p/Monad
+    (p/-bind [m f] m)
 
     clojure.core.match.protocols/IMatchLookup
     (val-at [_ k not-found]
