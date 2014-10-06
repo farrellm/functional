@@ -11,12 +11,19 @@
   (if (satisfies? p/Category c) (p/-id c)
       (id+ c)))
 
+(defmulti comp+
+  (fn [a b] (h/most-general :category a)))
+
+(defn compose [a b]
+  (if (satisfies? p/Category a) (p/-comp a b)
+      (comp+ a b)))
+
 (defn <<<
   ([a] a)
-  ([a b & c] (if c (p/-comp a (apply <<< b c))
-                 (p/-comp a b))))
+  ([a b & c] (if c (compose a (apply <<< b c))
+                 (compose a b))))
 
 (defn >>>
   ([a] a)
-  ([a b & c] (if c (p/-comp (apply >>> b c) a)
-                 (p/-comp b a))))
+  ([a b & c] (if c (compose (apply >>> b c) a)
+                 (compose b a))))
