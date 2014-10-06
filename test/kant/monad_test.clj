@@ -1,5 +1,7 @@
 (ns kant.monad-test
   (:require [clojure.test :refer :all]
+            [kant.monad.protocol :as p]
+            [kant.hierarchy :as h]
             [kant.functor :refer :all]
             [kant.applicative :refer :all]
             [kant.monad :refer :all]
@@ -12,9 +14,6 @@
             [kant.monad.state :refer :all]
             [kant.monad.maybe-t :refer :all]
             [kant.arrow.function :refer :all]
-            [kant.arrow.kleisli :refer :all]
-            [kant.hierarchy :as h]
-            [kant.monad.protocol :as p]
             ))
 
 (deftest monad-functions
@@ -144,45 +143,25 @@
                 #(maybe-t [(just (inc %))]))))))
 
 (deftest function
-  (testing "function"
-    (is (= (maybe-t [(just 2) nothing (just 3)])
-           (>>= (maybe-t [(just 1) nothing (just 2)])
-                #(maybe-t [(just (inc %))])))))
   (testing "applicative"
     (= 9 ((<*> (constantly inc) (constantly 8)) nil))
     (= 9 ((<*> (pure #() inc) (pure #() 8)) nil)))
 
   (testing "arrow"
     (is (= [11 200] ((xxx inc #(+ % %)) [10 100])))
-    (is (= [11 200] (xxx inc #(+ % %) [10 100])))
-    (is (= [11 20] ((&&& inc #(+ % %)) 10)))
-    (is (= [11 20] (&&& inc #(+ % %) 10)))
+    (is (= [11 20]  ((&&& inc #(+ % %)) 10)))
 
     (is (= 1 ((arr #() inc) 0)))
-    (is (= [1 2] (arr-first inc [0 2])))
     (is (= [1 2] ((arr-first inc) [0 2])))
-
-    (is (= [0 3] (arr-second inc [0 2])))
     (is (= [0 3] ((arr-second inc) [0 2])))
 
     (is (=  1 ((<<< dec #(* 2 %) inc) 0)))
     (is (= -1 ((>>> dec #(* 2 %) inc) 0)))))
 
+(deftest kleisli-
+  (testing "applicative"))
+
 #_(deftest template
   (testing "functor")
   (testing "applicative")
   (testing "monad"))
-
-#_((require '[functional.monad.maybe :refer :all])
-   (def f #(just (inc %)))
-   (def g #(just (+ % %)))
-   (>>= (just 8) f f f)
-   (>>= (just 8) (>=> f))
-   (>>= (just 8) (>=> f f))
-   (>>= (just 8) (>=> f f f))
-
-   (>>= (just 0) f g)
-   (>>= (just 10) (run-kleisli (kleisli f)))
-
-   ;; ((run-function (id (function f))) 0)
-   (arr-first (kleisli f) (just [0 0])))
