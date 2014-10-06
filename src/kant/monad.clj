@@ -4,7 +4,8 @@
             [kant.hierarchy :as h]
             [kant.functor :refer :all]
             [kant.applicative :refer :all]
-            [kant.monoid :refer :all]))
+            [kant.monoid :refer :all]
+            [kant.monad.either :as e]))
 
 (defprotocol Kleisli
   (run-kleisli [_]))
@@ -77,4 +78,14 @@
     (-arr [_ f] (kleisli m #(m (f %))))
     (-first [_] (kleisli m (fn [[a1 b]]
                              (m-do [a2 (f a1)]
-                                   [:return [a2 b]]))))))
+                                   [:return [a2 b]]))))
+
+    p/ArrowChoice
+    (-left [_] (kleisli m  #(match [%]
+                              [{:left v}]  (m-do [u (f v)]
+                                                 (m (e/left u)))
+                              [{:right v}] (m (e/right v)))))
+    (-right [_] (kleisli m  #(match [%]
+                              [{:left v}]  (m (e/left v))
+                              [{:right v}] (m-do [u (f v)]
+                                                 (m (e/right u))))))))
