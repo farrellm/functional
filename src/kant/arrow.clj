@@ -5,6 +5,8 @@
             [kant.category :refer :all]
             [kant.applicative :refer :all]))
 
+(declare &&&)
+
 (defn -swap [[a b]] [b a])
 (defn -dup  [a]   [a a])
 (defn -flip [f]   #(f %2 %1))
@@ -34,9 +36,8 @@
   (arr m (fn [_] a)))
 
 (defmethod <*>+ ::h/arrow [af av]
-  (>>> (arr af -dup)  #(arr-first av %)
-       (arr af -swap) #(arr-first af %)
-       (fn [[f v]] (f v))))
+  (>>> (&&& af av)
+       (arr af (fn [[f v]] (f v)))))
 
 ;; other arrow functions
 (defn arr-second [a]
