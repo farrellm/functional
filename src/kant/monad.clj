@@ -70,7 +70,7 @@
     (run-kleisli [_] f)
 
     p/Category
-    (-id [_] (kleisli #(m %)))
+    (-id [_] (kleisli m #(m %)))
     (-comp [_ b] (kleisli m (>=> (run-kleisli b) f)))
 
     p/Arrow
