@@ -6,15 +6,10 @@
             [kant.applicative :refer :all]
             [kant.monoid :refer :all]))
 
-(declare >>=)
+(defprotocol Kleisli
+  (run-kleisli [_]))
 
-(defn $
-  "partial application operator.  returns a function that expects to
-  be partially applied 1 (more) time"
-  [f]
-  (fn [& args1]
-    (fn [& args2]
-      (apply (apply partial f args1) args2))))
+(declare >>=)
 
 ;; Applicative
 (defmethod <*>+ ::h/monad [af av]
@@ -68,3 +63,18 @@
 (defn >=>
   ([f] f)
   ([f & fs] #(apply >>= (f %) fs)))
+
+(defn kleisli [m f]
+  (reify
+    Kleisli
+    (run-kleisli [_] f)
+
+    p/Category
+    (-id [_] (kleisli #(m %)))
+    (-comp [_ b] (kleisli m (>=> (run-kleisli b) f)))
+
+    p/Arrow
+    (-arr [_ f] (kleisli m #(m (f %))))
+    (-first [_] (kleisli m (fn [[a1 b]]
+                             (m-do [a2 (f a1)]
+                                   [:return [a2 b]]))))))
