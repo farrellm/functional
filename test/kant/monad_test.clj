@@ -7,9 +7,10 @@
             [kant.monad :refer :all]
             [kant.category :refer :all]
             [kant.arrow :refer :all]
+            [kant.arrow-choice :refer :all]
             [kant.monoid :refer :all]
             [kant.monad.maybe :refer :all]
-            [kant.monad.either :refer :all]
+            [kant.monad.either :as e]
             [kant.monad.sequential :refer :all]
             [kant.monad.state :refer :all]
             [kant.monad.maybe-t :refer :all]
@@ -60,43 +61,43 @@
 
 (deftest either-
   (testing "basic"
-    (is (= 8 (-left (left 8))))
-    (is (= 8 (-right (right 8)))))
+    (is (= 8 (e/-left (e/left 8))))
+    (is (= 8 (e/-right (e/right 8)))))
   (testing "functor"
-    (is (= (left 8) (fmap inc (left 8))))
-    (is (= (right 9) (fmap inc (right 8)))))
+    (is (= (e/left 8) (fmap inc (e/left 8))))
+    (is (= (e/right 9) (fmap inc (e/right 8)))))
   (testing "applicative"
-    (is (= (right 9) (<*> (right inc) (right 8))))
-    (is (= (left 0) (<*> (left 0) (right 8))))
-    (is (= (left 0) (<*> (right inc) (left 0))))
-    (is (= (left 0) (<*> (left 0) (left 1)))))
+    (is (= (e/right 9) (<*> (e/right inc) (e/right 8))))
+    (is (= (e/left 0) (<*> (e/left 0) (e/right 8))))
+    (is (= (e/left 0) (<*> (e/right inc) (e/left 0))))
+    (is (= (e/left 0) (<*> (e/left 0) (e/left 1)))))
   (testing "monad"
-    (is (= (right [8 8]) (>>= (right 8) #(right [%1 %1]))))
-    (is (= (right [9 9]) (>>= (right 8)
-                              #(right (inc %))
-                              #(right [%1 %1]))))
-    (is (= nothing (>>= nothing #(right [%1 %1])))))
+    (is (= (e/right [8 8]) (>>= (e/right 8) #(e/right [%1 %1]))))
+    (is (= (e/right [9 9]) (>>= (e/right 8)
+                                #(e/right (inc %))
+                                #(e/right [%1 %1]))))
+    (is (= nothing (>>= nothing #(e/right [%1 %1])))))
   (testing "do"
-    (is (= (right [1 5 3]) (m-do [x (right 1)]
-                                 (right 2)
-                                 [:let y 5, z 3]
-                                 (right [x y z]))))
-    (is (= (left 0) (m-do [x (right 1)]
-                                 (right 2)
-                                 (left 0)
-                                 [:let y 5, z 3]
-                                 (right [x y z])))))
+    (is (= (e/right [1 5 3]) (m-do [x (e/right 1)]
+                                   (e/right 2)
+                                   [:let y 5, z 3]
+                                   (e/right [x y z]))))
+    (is (= (e/left 0) (m-do [x (e/right 1)]
+                            (e/right 2)
+                            (e/left 0)
+                            [:let y 5, z 3]
+                            (e/right [x y z])))))
 
   (testing "return"
-    (is (= (right 8) (m-do [x (right 8)]
-                           [:return x])))
-    (is (= (right 8) (m-do (right 9)
-                           [:return 1]
-                           [:return 8]))))
+    (is (= (e/right 8) (m-do [x (e/right 8)]
+                             [:return x])))
+    (is (= (e/right 8) (m-do (e/right 9)
+                             [:return 1]
+                             [:return 8]))))
   (testing "multi-bind"
-    (is (= (left 0) (m-do [x (right 1)
-                           y (left 0)]
-                          [:return [x y]])))))
+    (is (= (e/left 0) (m-do [x (e/right 1)
+                             y (e/left 0)]
+                            [:return [x y]])))))
 
 (deftest sequential
   (testing "functor"
