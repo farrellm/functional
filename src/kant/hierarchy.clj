@@ -3,29 +3,42 @@
 
 ;;   functor
 ;;      |
-;; applicative   category
-;;         \       /
-;;           arrow
-;;             |
-;;        arrow-choice
-;;             |
-;;           monad
+;; applicative      category
+;;      |     \     /
+;;    monad    arrow
+;;        \      +--------------+
+;;          \    |              |
+;;          arrow-apply    arrow-choice
 
 (derive ::applicative ::functor)
-(derive ::arrow ::applicative)
+
+(derive ::monad ::applicative)
+
 (derive ::arrow ::category)
+(derive ::arrow ::applicative)
+
 (derive ::arrow-choice ::arrow)
-(derive ::monad ::arrow-choice)
+
+(derive ::arrow-apply ::arrow)
+(derive ::arrow-apply ::monad)
 
 (def monad        (cons [::monad        #'kant.monad.protocol/Monad]       []))
-(def arrow-choice (cons [::arrow-choice #'kant.monad.protocol/ArrowChoice] monad))
-(def arrow        (cons [::arrow        #'kant.monad.protocol/Arrow]       arrow-choice))
-(def category     (cons [::category     #'kant.monad.protocol/Category]    arrow))
-(def applicative  (cons [::applicative  #'kant.monad.protocol/Applicative] arrow))
+(def arrow-apply  (cons [::arrow-apply  #'kant.monad.protocol/ArrowApply]  []))
+
+(def arrow-choice (cons [::arrow-choice #'kant.monad.protocol/ArrowChoice] []))
+
+(def arrow        (cons [::arrow        #'kant.monad.protocol/Arrow]       (concat arrow-apply
+                                                                                   arrow-choice)))
+
+(def applicative  (cons [::applicative  #'kant.monad.protocol/Applicative] (concat monad
+                                                                                   arrow)))
 (def functor      (cons [::functor      #'kant.monad.protocol/Functor]     applicative))
+
+(def category     (cons [::category     #'kant.monad.protocol/Category]    arrow))
 
 (def heirarchy (hash-map :monad monad
                          :arrow-choice arrow-choice
+                         :arrow-apply arrow-apply
                          :arrow arrow
                          :category category
                          :applicative applicative
