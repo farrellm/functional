@@ -21,6 +21,9 @@
   (-left [a])
   (-right [a]))
 
+(defprotocol ArrowApply
+  (-app [arr b]))
+
 (defprotocol Monad
   (-bind [m f]))
 
