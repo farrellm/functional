@@ -1,4 +1,4 @@
-(ns kant.arrow.function
+(ns kant.monad.function
   (:require [kant.monad.protocol :refer :all]))
 
 (extend-type clojure.lang.AFunction

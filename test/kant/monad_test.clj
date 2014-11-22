@@ -14,7 +14,7 @@
             [kant.monad.sequential :refer :all]
             [kant.monad.state :refer :all]
             [kant.monad.maybe-t :refer :all]
-            [kant.arrow.function :refer :all]
+            [kant.monad.function :refer :all]
             ))
 
 (deftest monad-functions
