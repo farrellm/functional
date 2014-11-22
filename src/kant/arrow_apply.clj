@@ -4,6 +4,7 @@
             [kant.category :refer :all]
             [kant.arrow :refer :all]
             [kant.arrow-choice :refer :all]
+            [kant.applicative :refer :all]
             [kant.monad :refer :all]
             [kant.monad.either :as e]
             [clojure.core.match :refer [match]]))
@@ -20,3 +21,13 @@
 ;; ArrowChoice
 (defmethod left+ ::h/arrow-apply [a]
   (arr a #(e/either )))
+
+;; Monad
+(defmethod >>=+ ::h/arrow-apply [m f]
+  #(let [a (m %)
+         g (f a)]
+     (g %)))
+
+;; Applicative
+(prefer-method pure+ ::h/arrow ::h/monad)
+(prefer-method <*>+ ::h/arrow ::h/monad)

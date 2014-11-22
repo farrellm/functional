@@ -7,9 +7,9 @@
 ;;      |    \----\   /
 ;;      |         arrow
 ;;      |           |
-;;      |      arrow-choice
-;;      |           |
-;;    monad -- arrow-apply
+;;    monad    arrow-choice
+;;        \---\     |
+;;             arrow-apply
 
 (derive ::applicative ::functor)
 (derive ::monad ::applicative)
@@ -19,13 +19,14 @@
 (derive ::arrow-apply ::arrow-choice)
 
 (derive ::arrow ::applicative)
+(derive ::arrow-apply ::monad)
 
 (def arrow-apply  (cons [::arrow-apply  #'kant.impl.protocol/ArrowApply]  []))
 (def arrow-choice (cons [::arrow-choice #'kant.impl.protocol/ArrowChoice] arrow-apply))
 (def arrow        (cons [::arrow        #'kant.impl.protocol/Arrow]       arrow-choice))
 (def category     (cons [::category     #'kant.impl.protocol/Category]    arrow))
 
-(def monad        (cons [::monad        #'kant.impl.protocol/Monad]       []))
+(def monad        (cons [::monad        #'kant.impl.protocol/Monad]       arrow-apply))
 (def applicative  (cons [::applicative  #'kant.impl.protocol/Applicative] (concat monad arrow)))
 (def functor      (cons [::functor      #'kant.impl.protocol/Functor]     applicative))
 
