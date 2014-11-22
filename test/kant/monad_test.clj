@@ -8,6 +8,7 @@
             [kant.category :refer :all]
             [kant.arrow :refer :all]
             [kant.arrow-choice :refer :all]
+            [kant.arrow-apply :refer :all]
             [kant.monoid :refer :all]
             [kant.monad.maybe :refer :all]
             [kant.monad.either :as e]
@@ -156,11 +157,11 @@
     (is (= -1 ((>>> dec #(* 2 %) inc) 0))))
 
   (testing "applicative"
-    (= 9 ((<*> (constantly inc) (constantly 8)) nil))
-    (= 9 ((<*> (pure #() inc) (pure #() 8)) nil)))
+    (is (= 9 ((<*> (constantly inc) (constantly 8)) nil)))
+    (is (= 9 ((<*> (pure #() inc) (pure #() 8)) nil))))
 
   (testing "monad"
-    (= 8 ((>>= identity #(partial conj [%])) 8))))
+    (is (= [8 8] ((>>= identity #(partial conj [%])) 8)))))
 
 (deftest kleisli-
   (testing "applicative"))
