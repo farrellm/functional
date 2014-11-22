@@ -96,5 +96,5 @@
                                                  (m (e/right u))))))
 
     p/ArrowApply
-    (-app [_] (kleisli-a m (fn [[a b]] ((run-kleisli-a  a) b))))
+    (-app [_] (kleisli m (fn [[a b]] ((run-kleisli  a) b))))
     ))
