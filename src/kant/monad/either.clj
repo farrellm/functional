@@ -52,6 +52,16 @@
         :left v
         not-found))))
 
+(defn either [f g e]
+  (match [e]
+    [{:left v}]  (f v)
+    [{:right v}] (g v)))
+
+(defn mirror [e]
+  (match [e]
+    [{:left v}]  (right v)
+    [{:right v}] (left v)))
+
 ;; (fmap inc (right 8))
 ;; (<*> (right inc) (right 8))
 ;; (>>= (right 8) #(right (inc %)))
