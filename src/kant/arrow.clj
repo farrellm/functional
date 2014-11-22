@@ -20,15 +20,17 @@
   (fn [a f] (h/most-general :arrow a)))
 
 (defn arr [a f]
-  (if (satisfies? p/Arrow a) (p/-arr a f)
-      (arr+ a f)))
+  (if (satisfies? p/Arrow a)
+    (p/-arr a f)
+    (arr+ a f)))
 
 (defmulti arr-first+
   (fn [a] (h/most-general :arrow a)))
 
 (defn arr-first [arr]
-  (if (satisfies? p/Arrow arr) (p/-first arr)
-      (arr-first+ arr)))
+  (if (satisfies? p/Arrow arr)
+    (p/-first arr)
+    (arr-first+ arr)))
 
 ;; Applicative
 (defmethod pure+ ::h/arrow [m a]
@@ -40,7 +42,9 @@
 
 ;; other arrow functions
 (defn arr-second [a]
-  (>>> (arr a -swap) (arr-first a) (arr a -swap)))
+  (if (satisfies? p/ArrowSecond a)
+    (p/-second a)
+    (>>> (arr a -swap) (arr-first a) (arr a -swap))))
 
 ;; clojure complains about ***
 (defn xxx [f g]

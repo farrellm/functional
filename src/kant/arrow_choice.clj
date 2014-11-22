@@ -11,15 +11,16 @@
   (fn [a] (h/most-general :arrow-choice a)))
 
 (defn left [arr]
-  (if (satisfies? p/ArrowChoice arr) (p/-left arr)
-      (left+ arr)))
+  (if (satisfies? p/ArrowChoice arr)
+    (p/-left arr)
+    (left+ arr)))
 
-(defmulti right+
-  (fn [a] (h/most-general :arrow-choice a)))
-
-(defn right [arr]
-  (if (satisfies? p/ArrowChoice arr) (p/-right arr)
-      (right+ arr)))
+(defn right [a]
+  (if (satisfies? p/ArrowChoiceRight arr)
+    (p/-right arr)
+    (>>> (arr a e/mirror)
+         (left a)
+         (arr a e/mirror))))
 
 (defn +++ [f g]
   (>>> (left f) (right g)))

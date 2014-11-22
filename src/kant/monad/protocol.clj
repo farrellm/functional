@@ -16,9 +16,14 @@
 (defprotocol Arrow
   (-arr [_ f])
   (-first [a]))
+(defprotocol ArrowSecond
+  "Optional protocol for more efficient second"
+  (-second [a]))
 
 (defprotocol ArrowChoice
-  (-left [a])
+  (-left [a]))
+(defprotocol ArrowChoiceRight
+  "Optional protocol for more efficient right"
   (-right [a]))
 
 (defprotocol ArrowApply
