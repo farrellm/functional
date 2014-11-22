@@ -1,17 +1,17 @@
 (ns kant.monad.function
-  (:require [kant.impl.protocol :refer :all]))
+  (:require [kant.impl.protocol :as p]))
 
 (extend-type clojure.lang.AFunction
-  Category
+  p/Category
   (-id [_] identity)
   (-comp [a b] (comp a b))
 
-  Pure
+  p/Pure
   (-pure [_ a] (fn [_] a))
 
-  Arrow
+  p/Arrow
   (-arr [_ f] f)
   (-first [f] (fn [[a b]] [(f a) b]))
 
-  ArrowApply
+  p/ArrowApply
   (-app [_] (fn [[f a]] (f a))))
