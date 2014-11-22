@@ -144,10 +144,6 @@
                 #(maybe-t [(just (inc %))]))))))
 
 (deftest function
-  (testing "applicative"
-    (= 9 ((<*> (constantly inc) (constantly 8)) nil))
-    (= 9 ((<*> (pure #() inc) (pure #() 8)) nil)))
-
   (testing "arrow"
     (is (= [11 200] ((xxx inc #(+ % %)) [10 100])))
     (is (= [11 20]  ((&&& inc #(+ % %)) 10)))
@@ -157,7 +153,14 @@
     (is (= [0 3] ((arr-second inc) [0 2])))
 
     (is (=  1 ((<<< dec #(* 2 %) inc) 0)))
-    (is (= -1 ((>>> dec #(* 2 %) inc) 0)))))
+    (is (= -1 ((>>> dec #(* 2 %) inc) 0))))
+
+  (testing "applicative"
+    (= 9 ((<*> (constantly inc) (constantly 8)) nil))
+    (= 9 ((<*> (pure #() inc) (pure #() 8)) nil)))
+
+  (testing "monad"
+    (= 8 ((>>= identity #(partial conj [%])) 8))))
 
 (deftest kleisli-
   (testing "applicative"))

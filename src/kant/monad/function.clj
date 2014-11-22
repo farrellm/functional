@@ -11,4 +11,7 @@
 
   Arrow
   (-arr [_ f] f)
-  (-first [f] (fn [[a b]] [(f a) b])))
+  (-first [f] (fn [[a b]] [(f a) b]))
+
+  ArrowApply
+  (-app [_] (fn [[f a]] (f a))))
