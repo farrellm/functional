@@ -1,7 +1,7 @@
 (ns kant.monad-test
   (:require [clojure.test :refer :all]
-            [kant.monad.protocol :as p]
-            [kant.hierarchy :as h]
+            [kant.impl.protocol :as p]
+            [kant.impl.hierarchy :as h]
             [kant.functor :refer :all]
             [kant.applicative :refer :all]
             [kant.monad :refer :all]
