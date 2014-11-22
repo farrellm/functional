@@ -16,6 +16,7 @@
             [kant.monad.state :refer :all]
             [kant.monad.maybe-t :refer :all]
             [kant.monad.function :refer :all]
+            [kant.monad.kleisli :refer :all]
             ))
 
 (deftest monad-functions

@@ -4,17 +4,9 @@
             [kant.impl.hierarchy :as h]
             [kant.functor :refer :all]
             [kant.applicative :refer :all]
-            [kant.monoid :refer :all]
-            [kant.monad.either :as e]))
+            [kant.monoid :refer :all]))
 
-(defprotocol Kleisli
-  (run-kleisli [_]))
 
-(declare >>=)
-
-;; Applicative
-(defmethod <*>+ ::h/monad [af av]
-  (>>= af (fn [f] (>>= av (fn [v] (pure af (f v)))))))
 
 ;; Monad
 (defmulti >>=+
@@ -27,29 +19,34 @@
                (satisfies? p/Monad m) (p/-bind m f)
                :else (>>=+ m f))))
 
+;; Applicative
+(defmethod <*>+ ::h/monad [af av]
+  (>>= af (fn [f] (>>= av (fn [v] (pure af (f v)))))))
+
+;; more monad operations
 (defn m-do*
   ([body] (m-do* body false))
   ([body type]
      (match [body]
-            [([val] :seq)]       (match val
-                                        [:return v] `(pure ~type ~v)
-                                        v           v)
-            [([fst & rst] :seq)] (match fst
-                                        [:let & vs] `(let [~@vs] ~(m-do* rst type))
-                                        [:return v] `(>>= (pure ~type ~v) (fn [_#] ~(m-do* rst type)))
-                                        [:guard v]  `(>>= (if ~v (pure ~type nil) (zero ~type))
-                                                          (fn [_#] ~(m-do* rst type)))
-                                        [k v]       (if type
-                                                      `(>>= ~v (fn [~k] ~(m-do* rst type)))
-                                                      (let [t `t#]
-                                                        `(let [~t ~v]
-                                                           (>>= ~t (fn [~k] ~(m-do* rst t))))))
-                                        [k v & rs]  (m-do* (concat [[k v]] [rs] rst) type)
-                                        v           (if type
-                                                      `(>>= ~v (fn [_#] ~(m-do* rst type)))
-                                                      (let [t `t#]
-                                                        `(let [~t ~v]
-                                                           (>>= ~t (fn [_#] ~(m-do* rst t))))))))))
+       [([val] :seq)]       (match val
+                              [:return v] `(pure ~type ~v)
+                              v           v)
+       [([fst & rst] :seq)] (match fst
+                              [:let & vs] `(let [~@vs] ~(m-do* rst type))
+                              [:return v] `(>>= (pure ~type ~v) (fn [_#] ~(m-do* rst type)))
+                              [:guard v]  `(>>= (if ~v (pure ~type nil) (zero ~type))
+                                                (fn [_#] ~(m-do* rst type)))
+                              [k v]       (if type
+                                            `(>>= ~v (fn [~k] ~(m-do* rst type)))
+                                            (let [t `t#]
+                                              `(let [~t ~v]
+                                                 (>>= ~t (fn [~k] ~(m-do* rst t))))))
+                              [k v & rs]  (m-do* (concat [[k v]] [rs] rst) type)
+                              v           (if type
+                                            `(>>= ~v (fn [_#] ~(m-do* rst type)))
+                                            (let [t `t#]
+                                              `(let [~t ~v]
+                                                 (>>= ~t (fn [_#] ~(m-do* rst t))))))))))
 
 (defmacro m-do [& body]
   (m-do* body))
@@ -64,37 +61,3 @@
 (defn >=>
   ([f] f)
   ([f & fs] #(apply >>= (f %) fs)))
-
-(defn kleisli [m f]
-  (reify
-    Kleisli
-    (run-kleisli [_] f)
-
-    p/Category
-    (-id [_] (kleisli m #(m %)))
-    (-comp [_ b] (kleisli m (>=> (run-kleisli b) f)))
-
-    p/Arrow
-    (-arr [_ f] (kleisli m #(m (f %))))
-    (-first [_] (kleisli m (fn [[a1 b]]
-                             (m-do [a2 (f a1)]
-                                   [:return [a2 b]]))))
-    p/ArrowSecond
-    (-second [_] (kleisli m (fn [[a b1]]
-                              (m-do [b2 (f b1)]
-                                    [:return [a b2]]))))
-
-    p/ArrowChoice
-    (-left [_] (kleisli m  #(match [%]
-                              [{:left v}]  (m-do [u (f v)]
-                                                 (m (e/left u)))
-                              [{:right v}] (m (e/right v)))))
-    p/ArrowChoiceRight
-    (-right [_] (kleisli m  #(match [%]
-                              [{:left v}]  (m (e/left v))
-                              [{:right v}] (m-do [u (f v)]
-                                                 (m (e/right u))))))
-
-    p/ArrowApply
-    (-app [_] (kleisli m (fn [[a b]] ((run-kleisli  a) b))))
-    ))
