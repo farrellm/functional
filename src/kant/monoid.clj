@@ -1,6 +1,6 @@
 (ns kant.monoid
-  (:require [kant.monad.protocol :refer :all]
-            [kant.hierarchy :as h]))
+  (:require [kant.impl.protocol :refer :all]
+            [kant.impl.hierarchy :as h]))
 
 (defn zero [m]
   (-zero m))

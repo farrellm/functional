@@ -1,5 +1,5 @@
 (ns kant.monad.sequential
-  (:require [kant.monad.protocol :refer :all]))
+  (:require [kant.impl.protocol :refer :all]))
 
 (extend-type clojure.lang.Sequential
   Functor

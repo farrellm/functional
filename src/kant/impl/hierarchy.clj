@@ -1,5 +1,5 @@
-(ns kant.hierarchy
-  (:require [kant.monad.protocol]))
+(ns kant.impl.hierarchy
+  (:require [kant.impl.protocol]))
 
 ;;   functor
 ;;      |
@@ -20,14 +20,14 @@
 
 (derive ::arrow ::applicative)
 
-(def arrow-apply  (cons [::arrow-apply  #'kant.monad.protocol/ArrowApply]  []))
-(def arrow-choice (cons [::arrow-choice #'kant.monad.protocol/ArrowChoice] arrow-apply))
-(def arrow        (cons [::arrow        #'kant.monad.protocol/Arrow]       arrow-choice))
-(def category     (cons [::category     #'kant.monad.protocol/Category]    arrow))
+(def arrow-apply  (cons [::arrow-apply  #'kant.impl.protocol/ArrowApply]  []))
+(def arrow-choice (cons [::arrow-choice #'kant.impl.protocol/ArrowChoice] arrow-apply))
+(def arrow        (cons [::arrow        #'kant.impl.protocol/Arrow]       arrow-choice))
+(def category     (cons [::category     #'kant.impl.protocol/Category]    arrow))
 
-(def monad        (cons [::monad        #'kant.monad.protocol/Monad]       []))
-(def applicative  (cons [::applicative  #'kant.monad.protocol/Applicative] (concat monad arrow)))
-(def functor      (cons [::functor      #'kant.monad.protocol/Functor]     applicative))
+(def monad        (cons [::monad        #'kant.impl.protocol/Monad]       []))
+(def applicative  (cons [::applicative  #'kant.impl.protocol/Applicative] (concat monad arrow)))
+(def functor      (cons [::functor      #'kant.impl.protocol/Functor]     applicative))
 
 (def heirarchy (hash-map :arrow-apply arrow-apply
                          :arrow-choice arrow-choice

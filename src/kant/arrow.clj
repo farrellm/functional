@@ -1,6 +1,6 @@
 (ns kant.arrow
-  (:require [kant.monad.protocol :as p]
-            [kant.hierarchy :as h]
+  (:require [kant.impl.protocol :as p]
+            [kant.impl.hierarchy :as h]
             [kant.category :refer :all]
             [kant.applicative :refer :all]))
 

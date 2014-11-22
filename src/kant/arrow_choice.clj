@@ -1,7 +1,7 @@
 (ns kant.arrow-choice
   (:require [clojure.core.match :refer [match]]
-            [kant.monad.protocol :as p]
-            [kant.hierarchy :as h]
+            [kant.impl.protocol :as p]
+            [kant.impl.hierarchy :as h]
             [kant.category :refer :all]
             [kant.arrow :refer :all]
             [kant.monad.either :as e]))

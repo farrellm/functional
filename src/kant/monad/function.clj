@@ -1,5 +1,5 @@
 (ns kant.monad.function
-  (:require [kant.monad.protocol :refer :all]))
+  (:require [kant.impl.protocol :refer :all]))
 
 (extend-type clojure.lang.AFunction
   Category

@@ -1,7 +1,7 @@
 (ns kant.category
   (:require [clojure.core.match :refer [match]]
-            [kant.monad.protocol :as p]
-            [kant.hierarchy :as h]))
+            [kant.impl.protocol :as p]
+            [kant.impl.hierarchy :as h]))
 
 ;; Category
 (defmulti id+

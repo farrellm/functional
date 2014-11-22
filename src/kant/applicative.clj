@@ -1,7 +1,7 @@
 (ns kant.applicative
-  (:require [kant.monad.protocol :refer :all]
-            [kant.functor :refer :all]
-            [kant.hierarchy :as h]))
+  (:require [kant.impl.protocol :refer :all]
+            [kant.impl.hierarchy :as h]
+            [kant.functor :refer :all]))
 
 ;; Pure
 (defmulti pure+

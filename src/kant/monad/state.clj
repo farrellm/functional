@@ -1,5 +1,5 @@
 (ns kant.monad.state
-  (:require [kant.monad.protocol :refer :all]))
+  (:require [kant.impl.protocol :refer :all]))
 
 (defprotocol State
   (run-state [f]))
