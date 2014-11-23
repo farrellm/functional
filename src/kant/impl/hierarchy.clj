@@ -15,7 +15,8 @@
 (derive ::monad ::applicative)
 
 (derive ::arrow ::category)
-(derive ::arrow-choice ::arrow)
+(derive ::arrow-first ::arrow)
+(derive ::arrow-choice ::arrow-first)
 (derive ::arrow-apply ::arrow-choice)
 
 (derive ::arrow ::applicative)
@@ -23,7 +24,8 @@
 
 (def arrow-apply  (cons [::arrow-apply  #'kant.impl.protocol/ArrowApply]  []))
 (def arrow-choice (cons [::arrow-choice #'kant.impl.protocol/ArrowChoice] arrow-apply))
-(def arrow        (cons [::arrow        #'kant.impl.protocol/Arrow]       arrow-choice))
+(def arrow-first  (cons [::arrow-first  #'kant.impl.protocol/ArrowFirst]  arrow-choice))
+(def arrow        (cons [::arrow        #'kant.impl.protocol/Arrow]       arrow-first))
 (def category     (cons [::category     #'kant.impl.protocol/Category]    arrow))
 
 (def monad        (cons [::monad        #'kant.impl.protocol/Monad]       arrow-apply))
@@ -32,6 +34,7 @@
 
 (def heirarchy (hash-map :arrow-apply arrow-apply
                          :arrow-choice arrow-choice
+                         :arrow-first arrow-first
                          :arrow arrow
                          :category category
                          :monad monad

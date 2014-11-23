@@ -14,7 +14,8 @@
   (-comp [_ a]))
 
 (defprotocol Arrow
-  (-arr [_ f])
+  (-arr [_ f]))
+(defprotocol ArrowFirst
   (-first [a]))
 (defprotocol ArrowSecond
   "Optional protocol for more efficient second"

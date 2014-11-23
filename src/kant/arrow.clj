@@ -24,10 +24,10 @@
     (arr+ a f)))
 
 (defmulti arr-first+
-  (fn [a] (h/most-general :arrow a)))
+  (fn [a] (h/most-general :arrow-first a)))
 
 (defn arr-first [arr]
-  (if (satisfies? p/Arrow arr)
+  (if (satisfies? p/ArrowFirst arr)
     (p/-first arr)
     (arr-first+ arr)))
 
