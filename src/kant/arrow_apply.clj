@@ -24,9 +24,9 @@
 
 ;; Monad
 (defmethod >>=+ ::h/arrow-apply [m f]
-  #(let [a (m %)
-         g (f a)]
-     (g %)))
+  (>>> (&&& (>>> m f)
+            (id m))
+       (app m)))
 
 ;; Applicative
 (prefer-method pure+ ::h/arrow ::h/monad)
