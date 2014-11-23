@@ -157,6 +157,12 @@
     (is (=  1 ((<<< dec #(* 2 %) inc) 0)))
     (is (= -1 ((>>> dec #(* 2 %) inc) 0))))
 
+  (testing "arrow-choice"
+    (is (= (e/left 1) ((left inc) (e/left 0))))
+    (is (= (e/right 0) ((left inc) (e/right 0))))
+    (is (= (e/left 0) ((right inc) (e/left 0))))
+    (is (= (e/right 1) ((right inc) (e/right 0)))))
+
   (testing "applicative"
     (is (= 9 ((<*> (constantly inc) (constantly 8)) nil)))
     (is (= 9 ((<*> (pure #() inc) (pure #() 8)) nil))))
