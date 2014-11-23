@@ -162,7 +162,11 @@
     (is (= 9 ((<*> (pure #() inc) (pure #() 8)) nil))))
 
   (testing "monad"
-    (is (= [8 8] ((>>= identity #(partial conj [%])) 8)))))
+    (is (= [8 8] ((>>= identity #(partial conj [%])) 8)))
+    (is (= 19 ((m-do [a #(* 2 %)]
+                     [b #(+ 10 %)]
+                     [:return (+ a b)])
+               3)))))
 
 (deftest kleisli-
   (testing "applicative"))
