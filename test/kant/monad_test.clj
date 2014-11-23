@@ -168,8 +168,32 @@
                      [:return (+ a b)])
                3)))))
 
+(def k (kleisli just #()))
 (deftest kleisli-
-  (testing "applicative"))
+  (testing "arrow"
+    (is (= (just [11 200]) ((run-kleisli (xxx (arr k inc) (arr k #(+ % %)))) [10 100])))
+    (is (= (just [11 20])  ((run-kleisli (&&& (arr k inc) (arr k #(+ % %)))) 10)))
+
+    (is (= (just 1) ((run-kleisli (arr k inc)) 0)))
+    (is (= (just [1 2]) ((run-kleisli (arr-first (arr k inc))) [0 2])))
+    (is (= (just [0 3]) ((run-kleisli (arr-second (arr k inc))) [0 2])))
+
+    (is (= (just 1)  ((run-kleisli (<<< (arr k dec) (arr k #(* 2 %)) (arr k inc))) 0)))
+    (is (= (just -1) ((run-kleisli (>>> (arr k dec) (arr k #(* 2 %)) (arr k inc))) 0)))
+    )
+
+  (testing "applicative"
+    (is (= (just 9) ((run-kleisli (<*> (arr k (constantly inc)) (arr k (constantly 8)))) nil)))
+    (is (= (just 9) ((run-kleisli (<*> (arr k (pure #() inc)) (arr k (pure #() 8)))) nil))))
+
+  (testing "monad"
+    (is (= (just [8 8]) ((run-kleisli (>>= (arr k identity)
+                                           #(arr k (partial conj [%])))) 8)))
+    (is (= (just 19) ((run-kleisli (m-do [a (arr k #(* 2 %))]
+                                         [b (arr k #(+ 10 %))]
+                                         [:return (+ a b)]))
+                      3))))
+  )
 
 #_(deftest template
   (testing "functor")
