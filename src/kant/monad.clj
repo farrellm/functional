@@ -6,8 +6,6 @@
             [kant.applicative :refer :all]
             [kant.monoid :refer :all]))
 
-
-
 ;; Monad
 (defmulti >>=+
   (fn [m f] (h/most-general :monad m)))
