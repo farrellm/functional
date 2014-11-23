@@ -33,7 +33,7 @@
 
 ;; Monad
 (defmethod >>=+ ::h/arrow-apply [m f]
-  (>>> (&&& (>>> m f)
+  (>>> (&&& (>>> m (arr m f))
             (id m))
        (app m)))
 
