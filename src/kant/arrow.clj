@@ -8,7 +8,6 @@
 
 (defn -swap [[a b]] [b a])
 (defn -dup  [a]   [a a])
-(defn -flip [f]   #(f %2 %1))
 
 (defn $
   "function application operator"
