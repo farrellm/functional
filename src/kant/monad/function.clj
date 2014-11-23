@@ -11,7 +11,6 @@
 
   p/Arrow
   (-arr [_ f] f)
-  (-first [f] (fn [[a b]] [(f a) b]))
 
   p/ArrowApply
   (-app [_] (fn [[f a]] (f a))))
