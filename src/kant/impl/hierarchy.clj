@@ -24,8 +24,8 @@
 
 (def arrow-apply  (cons [::arrow-apply  #'kant.impl.protocol/ArrowApply]  []))
 (def arrow-choice (cons [::arrow-choice #'kant.impl.protocol/ArrowChoice] arrow-apply))
-(def arrow-first  (cons [::arrow-first  #'kant.impl.protocol/ArrowFirst]  arrow-choice))
-(def arrow        (cons [::arrow        #'kant.impl.protocol/Arrow]       arrow-first))
+(def arrow-first  (cons [::arrow-first  #'kant.impl.protocol/ArrowFirst]  arrow-apply))
+(def arrow        (cons [::arrow        #'kant.impl.protocol/Arrow]       []))
 (def category     (cons [::category     #'kant.impl.protocol/Category]    arrow))
 
 (def monad        (cons [::monad        #'kant.impl.protocol/Monad]       arrow-apply))
