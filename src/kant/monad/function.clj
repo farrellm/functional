@@ -12,5 +12,8 @@
   p/Arrow
   (-arr [_ f] f)
 
+  p/ArrowChoice
+  (-left [f] (partial e/either (comp e/left f) (comp e/right identity)))
+
   p/ArrowApply
   (-app [_] (fn [[f a]] (f a))))
