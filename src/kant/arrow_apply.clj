@@ -20,14 +20,17 @@
 
 ;; ArrowChoice
 (defmethod left+ ::h/arrow-apply [a]
-  (>>> (arr a (fn [i] (match [i]
-                        [{:left v}]  [(>>> a (arr a e/left)) v]
-                        [{:right v}] [(arr a e/right) v])))
+  (>>> (arr a (||| #(vector (>>> a (arr a e/left)) %)
+                   #(vector (arr a e/right) %)))
        (app a)))
 
 ;; ArrowFirst
 (defmethod arr-first+ ::h/arrow-apply [a]
-  (arr a (fn [[x y]] [((app a) [a x]) y])))
+  (>>> (arr a (fn [[x y]] (>>> (arr a (fn [_] [a x]))
+                               (app a)
+                               (arr a (fn [v] [v y])))))
+       (arr a (fn [v] [v nil]))
+       (app a)))
 
 ;; Monad
 (defmethod >>=+ ::h/arrow-apply [m f]
