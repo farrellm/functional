@@ -1,5 +1,6 @@
 (ns kant.monad.function
-  (:require [kant.impl.protocol :as p]))
+  (:require [kant.impl.protocol :as p]
+            [kant.monad.either :as e]))
 
 (extend-type clojure.lang.AFunction
   p/Category
