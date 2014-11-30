@@ -17,4 +17,10 @@
   (-left [f] (partial e/either (comp e/left f) (comp e/right identity)))
 
   p/ArrowApply
-  (-app [_] (fn [[f a]] (f a))))
+  (-app [_] (fn [[f a]] (f a)))
+
+  p/ArrowLoop
+  (-loop [f] (fn [b]
+               (let [rec (fn rec [d] (f b (delay (second (rec d)))))
+                     [c d] (rec nil)]
+                 (if (delay? c) @c c)))))

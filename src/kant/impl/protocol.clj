@@ -30,6 +30,9 @@
 (defprotocol ArrowApply
   (-app [_]))
 
+(defprotocol ArrowLoop
+  (-loop [_]))
+
 (defprotocol Monad
   (-bind [m f]))
 

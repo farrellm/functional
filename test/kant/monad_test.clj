@@ -9,6 +9,7 @@
             [kant.arrow :refer :all]
             [kant.arrow-choice :refer :all]
             [kant.arrow-apply :refer :all]
+            [kant.arrow-loop :refer :all]
             [kant.monoid :refer :all]
             [kant.monad.maybe :refer :all]
             [kant.monad.either :as e]
@@ -172,7 +173,14 @@
     (is (= 19 ((m-do [a #(* 2 %)]
                      [b #(+ 10 %)]
                      [:return (+ a b)])
-               3)))))
+               3))))
+
+  (testing "loop"
+    (is (= 8 ((arr-loop (constantly [8 nil])) 0)))
+    (is (= [2 2 2] (let [a (fn [x l] [l (lazy-seq (cons x @l))])]
+                     (take 3 ((arr-loop a) 2)))))
+    (is (= [2 4 8] (let [a (fn [x l] [l (lazy-seq (cons x (map #(* x %) @l)))])]
+                     (take 3 ((arr-loop a) 2)))))))
 
 (def k (kleisli just #()))
 (deftest kleisli-
