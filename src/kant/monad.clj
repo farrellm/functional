@@ -58,4 +58,4 @@
 
 (defn >=>
   ([f] f)
-  ([f & fs] #(apply >>= (f %) fs)))
+  ([f & fs] (fn [& args] (apply >>= (apply f args) fs))))
