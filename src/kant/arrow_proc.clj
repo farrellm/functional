@@ -31,11 +31,10 @@
                     arr-exp (arr a (fn [v] (apply (eval `(fn [ ~@ss ] ~exp)) v)))]
                 (-> res
                     (update-in [:arr] >>>
-                               (arr a
-                                    (fn [v] (assoc v (:index res)
-                                                   (map #(v (% (:vals res))) (-symbols res exp)))))
-                               (arr-nth (:index res) arr-exp)
-                               (arr-nth (:index res) a))
+                               (arr a (fn [v] [(map #(v (% (:vals res))) (-symbols res exp)) v]))
+                               (arr-first arr-exp)
+                               (arr-first a)
+                               (arr a (fn [[x v]] (assoc v (:index res) x))))
                     (update-in [:index] inc)))
               (-proc-line (assoc res
                             :type a

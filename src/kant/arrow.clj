@@ -9,9 +9,6 @@
 (defn -swap [[a b]] [b a])
 (defn -dup  [a]   [a a])
 
-(defn -swap-n [n]   #(vector (% n) %))
-(defn -unswap-n [n] (fn [[a v]] (assoc v n a)))
-
 (defn $
   "function application operator"
   [f & args]
@@ -47,9 +44,6 @@
   (if (satisfies? p/ArrowSecond a)
     (p/-second a)
     (>>> (arr a -swap) (arr-first a) (arr a -swap))))
-
-(defn arr-nth [n a]
-  (>>> (arr a (-swap-n n)) (arr-first a) (arr a (-unswap-n n))))
 
 ;; clojure complains about ***
 (defn xxx [f g]
