@@ -1,4 +1,4 @@
-(defproject kant "0.1.0-SNAPSHOT"
+(defproject kant "0.1.0"
   :description "Monads for Clojure"
   :url "https://github.com/farrellm/kant"
   :license {:name "Eclipse Public License"
